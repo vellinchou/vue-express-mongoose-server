@@ -24,14 +24,14 @@ var proxyTable = config.dev.proxyTable
 
 var app = express()
 
-var router = express.Router()
-var users = require('./../static/mook/users.json')
+// var router = express.Router()
+// var users = require('./../static/mook/users.json')
 
-router.get('/users', (req, res, next)=>{
-  res.json(users)
-})
+// router.get('/users', (req, res, next)=>{
+//   res.json(users)
+// })
 
-app.use(router)
+// app.use(router)
 
 var compiler = webpack(webpackConfig)
 

@@ -12,6 +12,7 @@
     </ul>
     <h2>Ecosystem</h2>
     <button @click="getUsers">获取用户</button>
+    <button @click="getGoods">商品列表</button>
     <ul>
       <li v-for="(item, index) in users">{{item.name}}, {{item.mobile}}</li>
     </ul>
@@ -26,6 +27,7 @@
 
 <script>
 import requestApi from './../services/request.api.js'
+import goods from './Goods'
 export default {
   name: 'hello',
   data () {
@@ -33,6 +35,9 @@ export default {
       msg: 'Welcome to Your Vue.js App',
       users: []
     }
+  },
+  components: {
+    goods
   },
   mounted () {
     console.log('in hello.vue')
@@ -47,6 +52,10 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+
+    getGoods () {
+      this.$router.push({path: '/goods'})
     }
   }
 }
