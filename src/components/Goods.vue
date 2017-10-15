@@ -1,15 +1,29 @@
 <template>
   <div>
     <div class="goods-filter">
-      <el-button type="primary" @click="startSort">
-        <span v-show="sort == -1">升序</span>
-        <span v-show="sort == 1">降序</span>
-      </el-button>
-      <input type="number" v-model="pricegt" class="filter-input" placeholder="0"> -
-      <input type="number" v-model="pricelt" class="filter-input" placeholder="100">
-      <el-button type="primary" @click="filterPrice">价格过滤</el-button>
-      <input type="text" v-model="keywords">
-      <el-button type="primary" @click="searchKeywords">搜索</el-button>
+      
+      <div class="filter-item">
+        <el-button type="primary" @click="startPriceSort">
+          <span v-show="priceSort == -1">价格升序</span>
+          <span v-show="priceSort == 1">价格降序</span>
+        </el-button>
+        <el-button type="primary" @click="startSort">
+          <span v-show="timeSort == -1">时间升序</span>
+          <span v-show="timeSort == 1">时间降序</span>
+        </el-button>
+      </div>
+
+      <div class="filter-item">
+        <input type="number" v-model="pricegt" class="filter-input" placeholder="0"> -
+        <input type="number" v-model="pricelt" class="filter-input" placeholder="100">
+        <el-button type="primary" @click="filterPrice">价格过滤</el-button>
+      </div>
+
+      <div class="filter-item">
+        <input type="text" v-model="keywords">
+        <el-button type="primary" @click="searchKeywords">搜索</el-button>
+      </div>
+
     </div>
     <div class="goods-container clearfix">
       <div class="good-item" v-for="(item, $index) in goods">
@@ -50,7 +64,8 @@ export default {
   data () {
     return {
       goods: [],
-      sort: 1,
+      priceSort: 1,
+      timeSort: 1,
       page: 1,
       size: 8,
       pricelt: 0 ,
@@ -69,11 +84,19 @@ export default {
     this.getGoods()
   },
   methods: {
-    getGoods () {
+    getGoods (priceSort, timeSort) {
       var params = {
-        sort: this.sort,
         page: this.page,
-        size: this.size
+        size: this.size,
+        sort: {}
+      }
+
+      if (priceSort !== null) {
+        params.sort = { price: this.priceSort }
+      }
+
+      if (timeSort !== null) {
+        params.sort = { createTime: this.timeSort }
       }
       
       if (this.pricelt > 0) {
@@ -151,9 +174,14 @@ export default {
     },
 
     startSort() {
-      this.sort == 1 ? this.sort = -1 : this.sort = 1
+      this.timeSort == 1 ? this.timeSort = -1 : this.timeSort = 1
       this.page = 1
-      this.getGoods()
+      this.getGoods(null, {createTime: this.timeSort})
+    } ,
+    startPriceSort() {
+      this.priceSort == 1 ? this.priceSort = -1 : this.priceSort = 1
+      this.page = 1
+      this.getGoods({price: this.priceSort}, null)
     }
   }
 }
@@ -169,6 +197,8 @@ export default {
      width: 75% ;
      margin: 0 auto ;
      background:#eee ;
+     display: flex;
+     justify-content: space-around ;
    }
   .good-item {
     width: 200px;

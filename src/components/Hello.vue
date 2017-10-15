@@ -10,8 +10,8 @@
       <br>
       <li><a href="http://vuejs-templates.github.io/webpack/" target="_blank">Docs for This Template</a></li>
     </ul>
-    <h2>Ecosystem</h2>
-    <button @click="getUsers">获取用户</button>
+    <h2>node+express+vue 实现商品列表增删改查</h2>
+    <button @click="toAdd">添加商品</button>
     <button @click="getGoods">商品列表</button>
     <ul>
       <li v-for="(item, index) in users">{{item.name}}, {{item.mobile}}</li>
@@ -44,6 +44,10 @@ export default {
     console.log(typeof requestApi)
   },
   methods: {
+    toAdd() {
+      this.$router.push({path: '/add'})
+    },
+
     getUsers () {
       var promise = requestApi.getUsers()
       promise.then(res => {
