@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var goods = require('./routes/goods');
+var process = require('process')
 
 var app = express();
 
@@ -43,6 +44,13 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+process.on('uncaughtException', function (err) {
+  //打印出错误
+  console.log(err);
+  //打印出错误的调用栈方便调试
+  console.log(err.stack)
 });
 
 module.exports = app;

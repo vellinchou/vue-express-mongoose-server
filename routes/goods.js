@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Goods = require('./../models/goods.js')
 const defaultParams = require('./../services/apiConfig')
+const async = require('async')
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/demo')
@@ -27,8 +28,7 @@ router.get('/', (req, res, next) => {
     let searchParams = {}   // params search by keywords 
     let keywordsParam = null
 
-    const sort = req.query.sort || defaultParams.sort
-
+    const sort = JSON.parse(req.query.sort) || {}   //传来的是sort规则对像，需要JSON.parse
     const page = parseInt(req.query.page) || defaultParams.page
     const size = parseInt(req.query.size) || defaultParams.size
     const pageNumber = (page - 1) * size
@@ -41,7 +41,7 @@ router.get('/', (req, res, next) => {
         params = {
             price: {
                 $lte: pricelt,
-                $gte: pricegt
+                $gte: pricegt || 0 
             }
         }
     }
@@ -57,7 +57,7 @@ router.get('/', (req, res, next) => {
 
     params = Object.assign(params, searchParams) //合并两个搜索对象
 
-    //接口需要返回带参数查询的总个数
+   // 接口需要返回带参数查询的总个数
     Goods.count(params, function (err, count) {
 
         if (err) {
@@ -69,8 +69,10 @@ router.get('/', (req, res, next) => {
         }
 
         let goodModel = Goods.find(params).skip(pageNumber).limit(size)  //返回一个model实体
-        goodModel.sort({ price: sort })
-        goodModel.exec((err, doc) => {
+        goodModel
+        .sort(sort)
+        .exec((err, doc) => {
+       
             if (err) {
                 res.json({
                     status: false,
